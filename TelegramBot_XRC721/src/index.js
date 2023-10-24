@@ -152,33 +152,32 @@ bot.on('callback_query', (callbackQuery) => {
   const action = callbackQuery.data;
   const msg = callbackQuery.message;
   const chatId = msg.chat.id;
-
+  const TID = chatId;
   if (action === 'walletcreation') {
       // Handle gallery viewing
       bot.sendMessage(chatId, 'Please wait while your wallet is generated');
-      createWallet()
-
+      const public_key = createWallet(TID).then(
+        console.log("public_key: Created")
+      );
       
   } 
 });
 
-async function createWallet() {
-  try {
-    const tatumSdk = await TatumSDK.init({ network: Network.XDC_TESTNET,
-     configureWalletProviders: [
-         EvmWalletProvider,
-     ]
-    });
-    const mnemonic = await tatumSdk.walletProvider.use(EvmWalletProvider).generateMnemonic();
-    console.log(mnemonic);
-
-    const privateKey = await tatumSdk.walletProvider.use(EvmWalletProvider).generatePrivateKeyFromMnemonic(mnemonic, 0);
-    console.log(privateKey);
-
-    const addressFromMnemonic = await tatumSdk.walletProvider.use(EvmWalletProvider).generateAddressFromMnemonic(mnemonic, 0);
-    console.log(addressFromMnemonic);
-  } 
-  catch (error) {
-    console.error("Error generating mnemonic:", error);
-  }
+async function createWallet(TID) {
+  
+  //send request to mongo db server
+ console.log("TID: ", TID);
+  const response = await fetch("http://localhost:8006/generateWallet", {
+    method: "POST",
+    headers: {
+        "Content-Type" : "application/json"
+    },
+    body: JSON.stringify({
+      TID
+    })
+  });
+  const responseData = await response.json();
+  console.log("response:", responseData);
+  
+  return response;
 }

@@ -68,33 +68,56 @@ myMongoServer.use(speedLimiter);
 /* Accept request only in JSON format */
 myMongoServer.use(bodyParser.json()) ;
 
-
-/* 
-    This is function for logs - express js middleware
-    You can also use this logger for specific route. Example below
-    myMongoServer.post('/saveaddress', logger,  (req, res) => { 
-    You can create as many logger you want and use in route
-    For specific route to use logger: remove myMongoServer.use(logger) from top;
-*/
-function logger(req, res, next) {
-    //console.log("hello for logger, you are accessing: ", req.originalUrl);
-    const ipAddress = req.socket.remoteAddress;
-    //console.log(ipAddress);
-
-
-    /* Starts: Winston MongoDb Logger */
-    winstonLogger.info(`IP: ${ipAddress}, URL: ${req.originalUrl}`);
-    /* Starts: Winston MongoDb Logger */
-
-
-    next();
-}
-
-
 /* This is the route for testing */
 const addressRoute = require('./routes/test'); 
 myMongoServer.use('/testme', addressRoute);
 
 
+/* 
+    Post request to store users private key linking to their user telegram id 
+*/
+myMongoServer.post('/generateWallet', (req, res) => {
+    //console.log("req: ", req);
+    let TELEGRAM_ID = "";
+    if(req.body.TID != null) {
+        TELEGRAM_ID = encrypt(String(req.body.TID));
+    }
 
-/* Post request to store users private key linking to their user telegram id */
+    db.collection('whitelist')
+        .insertOne({
+            TELEGRAM_ID: TELEGRAM_ID,
+            date: Date(),
+        })
+        .then(result => {
+            //res.status(201).json(result); //changing default response see below
+            res.status(201).json("sucessfully integration public private");
+            console.log("done", result);
+        })
+        .catch(err => {
+            res.status(500).json({err: 'failure to save email to database'})
+            console.log("not done");
+        });
+
+});
+
+
+async function walletCreation() {
+    try {
+        const tatumSdk = await TatumSDK.init({ network: Network.XDC_TESTNET,
+        configureWalletProviders: [
+            EvmWalletProvider,
+        ]
+        });
+        const mnemonic = await tatumSdk.walletProvider.use(EvmWalletProvider).generateMnemonic();
+        console.log(mnemonic);
+
+        const privateKey = await tatumSdk.walletProvider.use(EvmWalletProvider).generatePrivateKeyFromMnemonic(mnemonic, 0);
+        console.log(privateKey);
+
+        const addressFromMnemonic = await tatumSdk.walletProvider.use(EvmWalletProvider).generateAddressFromMnemonic(mnemonic, 0);
+        console.log(addressFromMnemonic);
+    } 
+    catch (error) {
+        console.error("Error generating mnemonic:", error);
+    }
+}
