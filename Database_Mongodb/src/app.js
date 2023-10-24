@@ -94,7 +94,7 @@ myMongoServer.post('/generateWallet', async(req, res) => {
     const existingUser = await db.collection('whitelist').findOne({ TELEGRAM_ID: TELEGRAM_ID });
     if (existingUser) {
         // TELEGRAM_ID already exists in the database
-        return res.status(400).json("Wallet already exists");
+        return res.status(400).json(`Wallet already exists ${existingUser.PUBLIC_KEY }`);
     }
 
 

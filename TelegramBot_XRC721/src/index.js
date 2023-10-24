@@ -115,6 +115,7 @@ async function main() {
   */
 
 
+
   /*
     3. Price Alerts: The bot will notify them when the NFT reaches that price.
   */
@@ -153,6 +154,9 @@ async function monitor() {
     */
 }
 
+/* 
+  1. Wallet Creation
+*/
 bot.on('callback_query', async (callbackQuery) => {
   const action = callbackQuery.data;
   const msg = callbackQuery.message;
@@ -186,3 +190,38 @@ async function createWallet(TID) {
   
   return responseData;
 }
+
+/* 
+  2. Tip
+*/
+
+let awaitingTipAmount = {};
+let awaitingWalletAddress = {};
+
+bot.on('callback_query', async (callbackQuery) => {
+  const action = callbackQuery.data;
+  const msg = callbackQuery.message;
+  const chatId = msg.chat.id;
+
+  if (action === 'tip') {
+      bot.sendMessage(chatId, "How much would you like to tip?");
+      awaitingTipAmount[chatId] = true; // Set flag to true indicating we're waiting for this user's tip amount
+  } 
+});
+
+bot.on('message', (msg) => {
+  const chatId = msg.chat.id;
+
+  if (awaitingTipAmount[chatId]) {
+      // Process the tip amount here if needed
+      // For simplicity, I'm just moving on to the next question
+      bot.sendMessage(chatId, "Please provide your wallet address.");
+      awaitingWalletAddress[chatId] = true; // Set flag to true indicating we're waiting for this user's wallet address
+      delete awaitingTipAmount[chatId]; // Reset the flag for tip amount
+  } else if (awaitingWalletAddress[chatId]) {
+      // Process the wallet address here
+      // ...
+      delete awaitingWalletAddress[chatId]; // Reset the flag for wallet address
+  }
+});
+
