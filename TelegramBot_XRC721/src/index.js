@@ -9,6 +9,8 @@ const { ethers } = require('ethers');
 //require('dotenv/config');
 require('dotenv').config({path: '/Users/maharajababu/Documents/Projects/EBC_BARCELONA_XDC/TelegramBot_XRC721/.env'})
 const { TatumSDK, Xdc, Network, XinFin } = require('@tatumio/tatum');
+const { EvmWalletProvider } = require("@tatumio/evm-wallet-provider");
+
 const app = express();
 const port = "8080";
 app.use(bodyParser.json());
@@ -34,6 +36,7 @@ async function main() {
     const options = {
       reply_markup: {
           inline_keyboard: [
+              [{ text: 'Generate Wallet', callback_data: 'walletcreation' }],
               [{ text: 'NFT Gallery Viewing', callback_data: 'gallery_viewing' }],
               [{ text: 'Trading Alert', callback_data: 'trading_alert' }],
               [{ text: 'NFT Minting', callback_data: 'nft_minting' }],
@@ -117,6 +120,7 @@ async function main() {
   */
 
   
+  
   /* 
     4. Monitor activity on a blockchain address
   */
@@ -125,6 +129,7 @@ async function main() {
 }
 
 main();
+
 
 
 
@@ -141,4 +146,39 @@ async function monitor() {
     console.log(subscription);
 
     */
+}
+
+bot.on('callback_query', (callbackQuery) => {
+  const action = callbackQuery.data;
+  const msg = callbackQuery.message;
+  const chatId = msg.chat.id;
+
+  if (action === 'walletcreation') {
+      // Handle gallery viewing
+      bot.sendMessage(chatId, 'Please wait while your wallet is generated');
+      createWallet()
+
+      
+  } 
+});
+
+async function createWallet() {
+  try {
+    const tatumSdk = await TatumSDK.init({ network: Network.XDC_TESTNET,
+     configureWalletProviders: [
+         EvmWalletProvider,
+     ]
+    });
+    const mnemonic = await tatumSdk.walletProvider.use(EvmWalletProvider).generateMnemonic();
+    console.log(mnemonic);
+
+    const privateKey = await tatumSdk.walletProvider.use(EvmWalletProvider).generatePrivateKeyFromMnemonic(mnemonic, 0);
+    console.log(privateKey);
+
+    const addressFromMnemonic = await tatumSdk.walletProvider.use(EvmWalletProvider).generateAddressFromMnemonic(mnemonic, 0);
+    console.log(addressFromMnemonic);
+  } 
+  catch (error) {
+    console.error("Error generating mnemonic:", error);
+  }
 }

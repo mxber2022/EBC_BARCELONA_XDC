@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@tatumio/evm-wallet-provider": "^1.0.11",
     "@tatumio/tatum": "^4.1.16",
     "axios": "^1.4.0",
     "body-parser": "^1.20.2",
