@@ -14,6 +14,9 @@ const { ServerApiVersion, Db } = require('mongodb');
 
 const { encrypt } = require('./encrypme');
 
+const { TatumSDK, Xdc, Network, XinFin } = require('@tatumio/tatum');
+const { EvmWalletProvider } = require("@tatumio/evm-wallet-provider");
+
 var bodyParser = require('body-parser');
 
 /* Middleware to get request body - post request*/
@@ -76,12 +79,16 @@ myMongoServer.use('/testme', addressRoute);
 /* 
     Post request to store users private key linking to their user telegram id 
 */
-myMongoServer.post('/generateWallet', (req, res) => {
+myMongoServer.post('/generateWallet', async(req, res) => {
     //console.log("req: ", req);
     let TELEGRAM_ID = "";
     if(req.body.TID != null) {
         TELEGRAM_ID = encrypt(String(req.body.TID));
     }
+
+    const temp = await walletCreation();
+    console.log("temp: ", temp);
+    
 
     db.collection('whitelist')
         .insertOne({
@@ -90,13 +97,13 @@ myMongoServer.post('/generateWallet', (req, res) => {
         })
         .then(result => {
             //res.status(201).json(result); //changing default response see below
-            res.status(201).json("sucessfully integration public private");
-            console.log("done", result);
+            res.status(201).json(temp);
+           // console.log("done", result);
         })
         .catch(err => {
             res.status(500).json({err: 'failure to save email to database'})
             console.log("not done");
-        });
+    });
 
 });
 
@@ -116,6 +123,8 @@ async function walletCreation() {
 
         const addressFromMnemonic = await tatumSdk.walletProvider.use(EvmWalletProvider).generateAddressFromMnemonic(mnemonic, 0);
         console.log(addressFromMnemonic);
+
+        return addressFromMnemonic;
     } 
     catch (error) {
         console.error("Error generating mnemonic:", error);

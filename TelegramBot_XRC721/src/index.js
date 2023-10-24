@@ -148,7 +148,7 @@ async function monitor() {
     */
 }
 
-bot.on('callback_query', (callbackQuery) => {
+bot.on('callback_query', async (callbackQuery) => {
   const action = callbackQuery.data;
   const msg = callbackQuery.message;
   const chatId = msg.chat.id;
@@ -156,10 +156,10 @@ bot.on('callback_query', (callbackQuery) => {
   if (action === 'walletcreation') {
       // Handle gallery viewing
       bot.sendMessage(chatId, 'Please wait while your wallet is generated');
-      const public_key = createWallet(TID).then(
-        console.log("public_key: Created")
-      );
-      
+      const public_key = await createWallet(TID);
+
+      console.log("public_key: ", public_key);
+      bot.sendMessage(chatId, public_key);
   } 
 });
 
@@ -179,5 +179,5 @@ async function createWallet(TID) {
   const responseData = await response.json();
   console.log("response:", responseData);
   
-  return response;
+  return responseData;
 }
