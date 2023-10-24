@@ -7,7 +7,7 @@ const axios = require('axios');
 const {abi} = require('./abi.js')
 const { ethers } = require('ethers');
 //require('dotenv/config');
-require('dotenv').config({path: '../.env'})
+require('dotenv').config({path: '/Users/maharajababu/Documents/Projects/EBC_BARCELONA_XDC/TelegramBot_XRC721/.env'})
 
 const app = express();
 const port = "8080";
@@ -105,7 +105,12 @@ async function main() {
 
 
   /*
-    Price Alerts: The bot will notify them when the NFT reaches that price.
+    2. Price Alerts: The bot will notify them when the NFT reaches that price.
+  */
+
+
+  /*
+    Generate Wallet: The bot will generate wallet as per the user name.
   */
 }
 
