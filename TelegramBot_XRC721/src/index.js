@@ -37,11 +37,12 @@ async function main() {
       reply_markup: {
           inline_keyboard: [
               [{ text: 'Generate Wallet', callback_data: 'walletcreation' }],
+              [{ text: 'TIP', callback_data: 'tip' }],
               [{ text: 'NFT Gallery Viewing', callback_data: 'gallery_viewing' }],
               [{ text: 'Trading Alert', callback_data: 'trading_alert' }],
               [{ text: 'NFT Minting', callback_data: 'nft_minting' }],
-              [{ text: 'Monitor Address', callback_data: 'monitor' }],
-              [{ text: 'TIP', callback_data: 'tip' }]
+              [{ text: 'Monitor Address', callback_data: 'monitor' }]
+              
           ]
       }
     };
@@ -109,20 +110,24 @@ async function main() {
 
 
 
-
   /*
-    2. Price Alerts: The bot will notify them when the NFT reaches that price.
+    2. Tip : The bot will tip money as per user preference.
   */
 
 
   /*
-    3. Generate Wallet: The bot will generate wallet as per the user name.
+    3. Price Alerts: The bot will notify them when the NFT reaches that price.
+  */
+
+
+  /*
+    4. Generate Wallet: The bot will generate wallet as per the user name.
   */
 
   
   
   /* 
-    4. Monitor activity on a blockchain address
+    5. Monitor activity on a blockchain address
   */
 
 

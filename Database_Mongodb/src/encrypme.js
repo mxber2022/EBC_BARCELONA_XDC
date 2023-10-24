@@ -15,7 +15,7 @@ function encrypt(toEncrypt)
 /*
 function decrypt(toDecrypt) 
 {
-    const absolutePath = path.resolve('./src/rsa_4096_priv.pem');
+    const absolutePath = path.resolve('./rsa_4096_priv.pem');
     const privateKey = fs.readFileSync(absolutePath, 'utf8')
     const buffer = Buffer.from(toDecrypt, 'base64')
     const decrypted = crypto.privateDecrypt(

@@ -83,21 +83,31 @@ myMongoServer.post('/generateWallet', async(req, res) => {
     //console.log("req: ", req);
     let TELEGRAM_ID = "";
     if(req.body.TID != null) {
-        TELEGRAM_ID = encrypt(String(req.body.TID));
+        TELEGRAM_ID = String(req.body.TID);
     }
 
     const temp = await walletCreation();
-    console.log("temp: ", temp);
+    console.log("temp1: ", temp.addressFromMnemonic);
+    console.log("temp2: ", temp.privateKey);
+
     
+    const existingUser = await db.collection('whitelist').findOne({ TELEGRAM_ID: TELEGRAM_ID });
+    if (existingUser) {
+        // TELEGRAM_ID already exists in the database
+        return res.status(400).json("Wallet already exists");
+    }
+
 
     db.collection('whitelist')
         .insertOne({
             TELEGRAM_ID: TELEGRAM_ID,
+            PRIVATE_KEY: temp.privateKey,
+            PUBLIC_KEY: temp.addressFromMnemonic,
             date: Date(),
         })
         .then(result => {
             //res.status(201).json(result); //changing default response see below
-            res.status(201).json(temp);
+            res.status(201).json(temp.addressFromMnemonic);
            // console.log("done", result);
         })
         .catch(err => {
@@ -124,7 +134,11 @@ async function walletCreation() {
         const addressFromMnemonic = await tatumSdk.walletProvider.use(EvmWalletProvider).generateAddressFromMnemonic(mnemonic, 0);
         console.log(addressFromMnemonic);
 
-        return addressFromMnemonic;
+        //return addressFromMnemonic, privateKey;
+        return {
+            addressFromMnemonic: addressFromMnemonic,
+            privateKey: privateKey
+        };
     } 
     catch (error) {
         console.error("Error generating mnemonic:", error);
