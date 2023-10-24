@@ -1,4 +1,5 @@
-require('dotenv/config');
+//require('dotenv/config');
+require('dotenv').config({path: '/Users/maharajababu/Documents/Projects/EBC_BARCELONA_XDC/Database_Mongodb/.env'})
 const { MongoClient } = require('mongodb');
 
 let dbConnection;
