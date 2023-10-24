@@ -8,7 +8,7 @@ const {abi} = require('./abi.js')
 const { ethers } = require('ethers');
 //require('dotenv/config');
 require('dotenv').config({path: '/Users/maharajababu/Documents/Projects/EBC_BARCELONA_XDC/TelegramBot_XRC721/.env'})
-
+const { TatumSDK, Xdc, Network, XinFin } = require('@tatumio/tatum');
 const app = express();
 const port = "8080";
 app.use(bodyParser.json());
@@ -36,7 +36,9 @@ async function main() {
           inline_keyboard: [
               [{ text: 'NFT Gallery Viewing', callback_data: 'gallery_viewing' }],
               [{ text: 'Trading Alert', callback_data: 'trading_alert' }],
-              [{ text: 'NFT Minting', callback_data: 'nft_minting' }]
+              [{ text: 'NFT Minting', callback_data: 'nft_minting' }],
+              [{ text: 'Monitor Address', callback_data: 'monitor' }],
+              [{ text: 'TIP', callback_data: 'tip' }]
           ]
       }
     };
@@ -47,6 +49,7 @@ async function main() {
   bot.onText(/\/rich/, (msg) => {
     chatId = msg.chat.id;
     bot.sendMessage(chatId, "Hold my beer");
+    monitor()
   });
 
   app.listen(port, () => {
@@ -110,10 +113,32 @@ async function main() {
 
 
   /*
-    Generate Wallet: The bot will generate wallet as per the user name.
+    3. Generate Wallet: The bot will generate wallet as per the user name.
   */
+
+  
+  /* 
+    4. Monitor activity on a blockchain address
+  */
+
+
 }
 
 main();
 
 
+
+
+async function monitor() {
+    const tatum = await TatumSDK.init({ network: Network.XDC});
+    const monitoredAddress = 'xdc13bc7ffde90a5dff3c180938acb463a19715b605';
+    /* 
+    const subscription = await tatum.notification.subscribe.incomingNativeTx({
+        address: monitoredAddress,
+        url: 'http://0.0.0.0:3000' // replace with your handler URL
+    });
+    console.log(`Now you are subscribed for all incoming ETH transactions on ${monitoredAddress}`);
+    console.log(subscription);
+
+    */
+}
