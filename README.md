@@ -38,13 +38,14 @@ To start using Bino, you can follow these steps:
 
 ## Usage
 
-Bino offers a range of commands to access its features. You can use these commands within a chat with the bot:
+Bino offers a range of options to access its features. You can use these options within a chat with the bot:
 
-- `/createwallet`: Create a new XDC wallet.
-- `/mintnft`: Mint a new NFT.
-- `/tip`: Send XDC tokens to other users.
-- `/balance`: Check your XDC account balance.
-- `/alerts`: Configure trading alerts and receive real-time updates.
+- `Generate Wallet`: Create a new XDC wallet.
+- `TIP`: Send XDC tokens to other users.
+- `AccountBalance`: Check your XDC account balance.
+- `NFT Holdings`: Check your XDC account NFT holdings.
+- `Trading Alert'`: Configure trading alerts and receive real-time updates.
+- `NFT Minting`: Mint a new NFT.
 
 For more detailed information on how to use each command, you can interact with the bot directly, and it will provide you with step-by-step instructions.
 
