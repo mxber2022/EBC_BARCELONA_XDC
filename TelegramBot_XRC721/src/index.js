@@ -302,7 +302,7 @@ bot.on('message', async(msg) => {
 let contract_Address = null;
 let awaiting_AddressFromChatId = null;
 let lastProcessedBlock = 0;
-const testnetProvider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/xdc_testnet");
+const testnetProvider = new ethers.providers.JsonRpcProvider("https://erpc.apothem.network");
 
 bot.on('callback_query', async (callbackQuery) => {
   const action = callbackQuery.data;
@@ -321,30 +321,27 @@ bot.on('message', async(msg) => {
   if (chatId === awaiting_AddressFromChatId) {
     contract_Address = msg.text;  // Store the contract address
     
-    setInterval(() => {
+    setInterval( () => {
       if (contract_Address) {
-          monitorContractTransactions(chatId);
+        console.log("contract_Address Track: ", contract_Address);
+           monitorContractTransactions(chatId);
       }
-  }, 60000);
+    }, 30000);
   }
 });
 
 async function monitorContractTransactions(chatId) {
-  if (!contract_Address) {
-      return;
-  }
+  
+    const currentBlockNumber = await testnetProvider.getBlockNumber();
+    console.log("currentBlockNumber: ", currentBlockNumber);
+    const block = await testnetProvider.getBlockWithTransactions(currentBlockNumber);
+    console.log("block: ", block);
 
-  const currentBlock = await testnetProvider.getBlockNumber();
-
-  for (let i = lastProcessedBlock + 1; i <= currentBlock; i++) {
-      const block = await testnetProvider.getBlockWithTransactions(i);
-      block.transactions.forEach(tx => {
-          if (tx.to && tx.to.toLowerCase() === contract_Address.toLowerCase()) {
-              // Notify the user about the transaction
-              bot.sendMessage(chatId, `New transaction to the smart contract: ${tx.hash}`);
-          }
-      });
-  }
-
-  lastProcessedBlock = currentBlock;
+    block.transactions.forEach(tx => {
+        if (tx.to && tx.to.toLowerCase() === contract_Address.toLowerCase()) {
+            // Notify about the transaction
+            bot.sendMessage(chatId, `New transaction to the smart contract in block ${currentBlockNumber}: ${tx.hash}`);
+        }
+    });
 }
+
