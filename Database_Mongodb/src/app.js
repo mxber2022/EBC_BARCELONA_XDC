@@ -168,9 +168,11 @@ myMongoServer.post('/tip', async(req, res) => {
         const wallet = new ethers.Wallet(existingUser.PRIVATE_KEY, testnetProvider)
         const walletSigner = wallet.connect(testnetProvider);
 
+        const slice_add = "0x" + req.body.awaitingWalletAddress.slice(3);
+        console.log("slice_add ",slice_add);
 
         const tx = {
-            to: req.body.awaitingWalletAddress,
+            to: slice_add,
             value: ethers.utils.parseEther(String(req.body.awaitingTipAmount)),
             
         };
