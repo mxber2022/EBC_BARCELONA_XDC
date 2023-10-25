@@ -45,7 +45,9 @@ Bino offers a range of options to access its features. You can use these options
 - `AccountBalance`: Check your XDC account balance.
 - `NFT Holdings`: Check your XDC account NFT holdings.
 - `Trading Alert'`: Configure trading alerts and receive real-time updates.
-- `NFT Minting`: Mint a new NFT.
+- `NFT Minting`: Mint a new NFT.  
+
+Contract deployed for testing 0xd718Aa634DD7863de76806a81e1a92a76D86aB20.
 
 For more detailed information on how to use each command, you can interact with the bot directly, and it will provide you with step-by-step instructions.
 
