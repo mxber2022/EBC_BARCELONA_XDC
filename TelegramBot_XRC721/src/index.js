@@ -209,19 +209,37 @@ bot.on('callback_query', async (callbackQuery) => {
   } 
 });
 
-bot.on('message', (msg) => {
+bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
 
   if (awaitingTipAmount[chatId]) {
-      // Process the tip amount here if needed
-      // For simplicity, I'm just moving on to the next question
       bot.sendMessage(chatId, "Please provide your wallet address.");
-      awaitingWalletAddress[chatId] = true; // Set flag to true indicating we're waiting for this user's wallet address
+      awaitingWalletAddress[chatId] = true; // Set flag to true indicating we're waiting for this user's wallet address  
+
       delete awaitingTipAmount[chatId]; // Reset the flag for tip amount
   } else if (awaitingWalletAddress[chatId]) {
-      // Process the wallet address here
-      // ...
+      /*
+        Send The TIP Logic 
+      */
+      const tip_status = await tip_user(chatId, awaitingTipAmount, awaitingWalletAddress);
+      bot.sendMessage(chatId, tip_status);
       delete awaitingWalletAddress[chatId]; // Reset the flag for wallet address
   }
 });
 
+async function tip_user(chatId, awaitingTipAmount, awaitingWalletAddress) {
+  const TID = chatId;
+  const response = await fetch("http://localhost:8006/tip", {
+    method: "POST",
+    headers: {
+      "Content-Type" : "application/json"
+    },
+    body: JSON.stringify({
+      TID, awaitingTipAmount, awaitingWalletAddress
+    })
+  });
+  
+  const responseData = await response.json();
+  console.log("response:", responseData);
+  return responseData;
+}

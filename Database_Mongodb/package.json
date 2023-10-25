@@ -23,7 +23,8 @@
     "helmet": "^6.0.1",
     "mongodb": "^4.13.0",
     "winston": "^3.8.2",
-    "winston-mongodb": "^5.1.0"
+    "winston-mongodb": "^5.1.0",
+    "ethers": "^5.7.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

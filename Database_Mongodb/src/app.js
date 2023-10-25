@@ -16,6 +16,7 @@ const { encrypt } = require('./encrypme');
 
 const { TatumSDK, Xdc, Network, XinFin } = require('@tatumio/tatum');
 const { EvmWalletProvider } = require("@tatumio/evm-wallet-provider");
+const { ethers, providers } = require("ethers"); 
 
 var bodyParser = require('body-parser');
 
@@ -143,4 +144,50 @@ async function walletCreation() {
     catch (error) {
         console.error("Error generating mnemonic:", error);
     }
+}
+
+
+/*
+    TIP
+*/
+
+myMongoServer.post('/tip', async(req, res) => {
+    //console.log("req: ", req);
+    let TELEGRAM_ID = "";
+    if(req.body.TID != null) {
+        TELEGRAM_ID = String(req.body.TID);
+    }
+
+        
+    const existingUser = await db.collection('whitelist').findOne({ TELEGRAM_ID: TELEGRAM_ID });
+    let temp_publicKey;
+    if (existingUser) {
+        // TELEGRAM_ID already exists in the database
+        temp_publicKey = existingUser.PUBLIC_KEY;
+        const testnetProvider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/xdc_testnet");
+        const wallet = new ethers.Wallet(existingUser.PRIVATE_KEY, testnetProvider)
+        const walletSigner = wallet.connect(testnetProvider);
+        const recipient_address = req.awaitingWalletAddress;
+        const tx = {
+            to: "0xe002ddd637dded302be470379e1fb6fc9134dc3d",
+            value: ethers.utils.parseEther("1"),
+            
+        };
+    
+        const response = await walletSigner.sendTransaction(tx);
+        await response.wait(); // Wait for the transaction to be mined
+    
+        console.log(`Transaction hash: ${response.hash}`);
+        
+
+    }
+    else
+    {
+        return;
+    }
+
+});
+
+async function transfer_tip() {
+
 }
