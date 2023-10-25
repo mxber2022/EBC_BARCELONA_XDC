@@ -220,7 +220,7 @@ bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
 
   if (awaitingTipAmount[chatId]) {
-      bot.sendMessage(chatId, "Please provide your wallet address.");
+      bot.sendMessage(chatId, "Please provide recipient wallet address.");
       awaitingWalletAddress[chatId] = true; // Set flag to true indicating we're waiting for this user's wallet address  
       tipAmount = msg.text;
       //console.log("tipAmount: ", tipAmount);
