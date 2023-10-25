@@ -167,10 +167,11 @@ myMongoServer.post('/tip', async(req, res) => {
         const testnetProvider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/xdc_testnet");
         const wallet = new ethers.Wallet(existingUser.PRIVATE_KEY, testnetProvider)
         const walletSigner = wallet.connect(testnetProvider);
-        const recipient_address = req.awaitingWalletAddress;
+
+
         const tx = {
-            to: "0xe002ddd637dded302be470379e1fb6fc9134dc3d",
-            value: ethers.utils.parseEther("1"),
+            to: req.body.awaitingWalletAddress,
+            value: ethers.utils.parseEther(String(req.body.awaitingTipAmount)),
             
         };
     
@@ -179,7 +180,7 @@ myMongoServer.post('/tip', async(req, res) => {
     
         console.log(`Transaction hash: ${response.hash}`);
         
-
+        res.status(201).json(response.hash);
     }
     else
     {

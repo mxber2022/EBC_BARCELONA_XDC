@@ -198,6 +198,9 @@ async function createWallet(TID) {
 let awaitingTipAmount = {};
 let awaitingWalletAddress = {};
 
+let tipAmount = 0;
+let wallet_Address = 0;
+
 bot.on('callback_query', async (callbackQuery) => {
   const action = callbackQuery.data;
   const msg = callbackQuery.message;
@@ -206,6 +209,8 @@ bot.on('callback_query', async (callbackQuery) => {
   if (action === 'tip') {
       bot.sendMessage(chatId, "How much would you like to tip?");
       awaitingTipAmount[chatId] = true; // Set flag to true indicating we're waiting for this user's tip amount
+      
+      
   } 
 });
 
@@ -215,19 +220,24 @@ bot.on('message', async (msg) => {
   if (awaitingTipAmount[chatId]) {
       bot.sendMessage(chatId, "Please provide your wallet address.");
       awaitingWalletAddress[chatId] = true; // Set flag to true indicating we're waiting for this user's wallet address  
-
+      tipAmount = msg.text;
+      //console.log("tipAmount: ", tipAmount);
+      
       delete awaitingTipAmount[chatId]; // Reset the flag for tip amount
   } else if (awaitingWalletAddress[chatId]) {
       /*
         Send The TIP Logic 
       */
-      const tip_status = await tip_user(chatId, awaitingTipAmount, awaitingWalletAddress);
-      bot.sendMessage(chatId, tip_status);
+        wallet_Address=msg.text;
+       // console.log("wallet_Address: ", wallet_Address);
+      const tip_status = await tip_user(chatId, tipAmount, wallet_Address);
+      bot.sendMessage(chatId, `Transaction_Hash ${tip_status}`);
       delete awaitingWalletAddress[chatId]; // Reset the flag for wallet address
   }
 });
 
 async function tip_user(chatId, awaitingTipAmount, awaitingWalletAddress) {
+
   const TID = chatId;
   const response = await fetch("http://localhost:8006/tip", {
     method: "POST",
