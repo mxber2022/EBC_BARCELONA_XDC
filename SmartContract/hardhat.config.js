@@ -22,7 +22,7 @@ module.exports = {
         network: "xdc-apothem",
         chainId: 51,
         urls: {
-          apiURL: "https://explorer.apothem.network/api",
+          apiURL: "https://apothem.blocksscan.io/api",
           browserURL: '',
         },
       },
