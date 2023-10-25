@@ -13,6 +13,10 @@ function encrypt(toEncrypt)
 }
 
 /*
+  Function to decrypt the encrypted data
+*/
+
+/*
 function decrypt(toDecrypt) 
 {
     const absolutePath = path.resolve('./rsa_4096_priv.pem');
