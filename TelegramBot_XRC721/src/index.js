@@ -383,4 +383,115 @@ async function getNFT() {
   6. NFT MINTING
 */
 
+const chatStates = {};
+const chatData = {};
 
+bot.on('callback_query', (callbackQuery) => {
+    const chatId = callbackQuery.message.chat.id;
+  
+    if (callbackQuery.data === 'nft_minting') {
+        chatStates[chatId] = 'awaiting_contract_address_';
+        bot.sendMessage(chatId, 'Please send the contract address of the NFT to be minted.');
+    }
+});
+
+bot.on('message', (msg) => {
+  const chatId = msg.chat.id;
+  
+  if (chatStates[chatId] === 'awaiting_contract_address_') {
+      // Store the contract address
+      chatData[chatId] = { contractAddress: msg.text };
+      
+      // Update the state to 'awaiting_nft_name'
+      chatStates[chatId] = 'awaiting_nft_name';
+      
+      // Prompt the user for the NFT name
+      bot.sendMessage(chatId, 'Contract address stored! Now, please send the name of the NFT.');
+  } else if (chatStates[chatId] === 'awaiting_nft_name') {
+      // Store the NFT name
+      chatData[chatId].nftName = msg.text;
+      
+      // Update the state to 'awaiting_nft_description'
+      chatStates[chatId] = 'awaiting_nft_description';
+      
+      // Prompt the user for the NFT description
+      bot.sendMessage(chatId, 'Name stored! Please provide a description for the NFT.');
+  } else if (chatStates[chatId] === 'awaiting_nft_description') {
+      // Store the NFT description
+      chatData[chatId].nftDescription = msg.text;
+      
+      // Update the state to 'awaiting_nft_picture'
+      chatStates[chatId] = 'awaiting_nft_picture';
+      
+      // Prompt the user for the NFT picture
+      bot.sendMessage(chatId, 'Lastly, Please send NFT to mint.');
+  }
+});
+
+bot.on('photo', async (msg) => {
+  const chatId = msg.chat.id;
+
+  if (chatStates[chatId] === 'awaiting_nft_picture') {
+      // Store the photo details (e.g., file ID)
+      chatData[chatId].nftPicture = msg.photo[msg.photo.length - 1].file_id;
+      
+      // Reset the state for this chat
+      chatStates[chatId] = null;
+      
+      console.log("nftDescription" ,chatData[chatId].nftDescription);
+      console.log("nftName", chatData[chatId].nftName);
+      console.log("contractAddress", chatData[chatId].contractAddress);
+
+
+      try {
+        const apiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDVGYzA0NTUyMzI5ODA5NDI4NDkzY0VDYjdmZkY4RkUxNGY5YkQzOTQiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4OTk2NjA0NzY5NiwibmFtZSI6IlBhcmlzIn0.9CxIio0ygPmcf8onnQcFrZurTQACHiB8qOgO6tcHEWs"; 
+        const client1 = new NFTStorage({ token: apiKey });
+        const photo = msg.photo;
+        const largestPhoto = photo[photo.length - 1];
+        const fileId = largestPhoto.file_id;
+        const photoInfo = await bot.getFile(fileId);
+        const photoUrl = `https://api.telegram.org/file/bot${botToken}/${photoInfo.file_path}`;
+        const photoBuffer = await downloadFileBuffer(photoUrl);
+        console.log(photoBuffer);
+        const file = new File([photoBuffer], "xdc.jpg", { type: 'image' });
+        const metadata = await client1.store({
+          name: chatData[chatId].nftName ,
+          description: chatData[chatId].nftDescription,
+          image: file,
+        });
+        bot.sendMessage(msg.chat.id, `IPFS Hash: ${metadata.url}`);
+  
+        
+
+        const temp_uri = metadata.url;
+        const temp_contract_add = chatData[chatId].contractAddress;
+
+        const TID = chatId;
+        const response = await fetch("http://localhost:8006/mint", {
+          method: "POST",
+          headers: {
+            "Content-Type" : "application/json"
+          },
+          body: JSON.stringify({
+            TID, temp_contract_add, temp_uri
+          })
+        });
+        
+        const responseData = await response.json();
+        console.log("responseData: ", responseData);
+
+        
+        bot.sendMessage(msg.chat.id, `Your NFT is Minted: ${responseData}`);  
+  
+      } catch (error) {
+        console.error(error);
+        bot.sendMessage(msg.chat.id, 'An error occurred while processing the photo.');
+      }
+      
+  }
+});
+
+async function downloadFileBuffer(url) {
+  const response = await axios.get(url, { responseType: 'arraybuffer' });
+  return response.data;
+}

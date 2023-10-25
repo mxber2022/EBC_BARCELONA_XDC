@@ -17,6 +17,7 @@ const { encrypt } = require('./encrypme');
 const { TatumSDK, Xdc, Network, XinFin } = require('@tatumio/tatum');
 const { EvmWalletProvider } = require("@tatumio/evm-wallet-provider");
 const { ethers, providers } = require("ethers"); 
+const {abi} = require('./abi.js')
 
 var bodyParser = require('body-parser');
 
@@ -182,6 +183,49 @@ myMongoServer.post('/tip', async(req, res) => {
     
         console.log(`Transaction hash: ${response.hash}`);
         
+        res.status(201).json(response.hash);
+    }
+    else
+    {
+        return;
+    }
+
+});
+
+/* 
+    Mint NFT
+*/
+
+
+myMongoServer.post('/mint', async(req, res) => {
+    //console.log("req: ", req);
+    let TELEGRAM_ID = "";
+    if(req.body.TID != null) {
+        TELEGRAM_ID = String(req.body.TID);
+    }
+
+    const existingUser = await db.collection('whitelist').findOne({ TELEGRAM_ID: TELEGRAM_ID });
+    let temp_publicKey;
+    if (existingUser) {
+        // TELEGRAM_ID already exists in the database
+
+        temp_publicKey = existingUser.PUBLIC_KEY; //mint this to nft
+        const testnetProvider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/xdc_testnet");
+        const contract = new ethers.Contract( req.body.temp_contract_add , abi , testnetProvider );
+        const wallet = new ethers.Wallet(existingUser.PRIVATE_KEY, testnetProvider)
+        const walletSigner = wallet.connect(testnetProvider);
+
+        
+        const tx = await contract.populateTransaction.safeMint(temp_publicKey, req.body.temp_uri, {
+            gasLimit: 1000000
+          }); 
+        console.log(tx);
+
+    
+        const response = await walletSigner.sendTransaction(tx);
+        await response.wait(); // Wait for the transaction to be mined
+    
+        console.log(`Transaction hash: ${response.hash}`);
         res.status(201).json(response.hash);
     }
     else
