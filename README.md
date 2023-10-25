@@ -1,6 +1,13 @@
 # Bino - XDC Blockchain Telegram Bot
 
+<br>
+  <img src="Assets/Header.png">
+<br>
 Bino is a Telegram bot designed to provide a seamless experience for users on the XinFin (XDC) blockchain. This project aims to make interacting with the XDC blockchain easy and accessible to a wide range of users. With Bino, you can perform various tasks, such as issuing wallets, minting NFTs, tipping other users, checking account balances, and receiving trading alerts.
+
+<p align="center">
+  <img  width="300" src="Assets/BinoLogo.png">
+</p>
 
 ## Table of Contents
 
@@ -25,6 +32,10 @@ Bino offers a variety of features to simplify your interaction with the XDC bloc
 5. **Trading Alerts**: Receive real-time trading alerts for XDC and stay informed about market movements, ensuring you never miss an opportunity.
 
 6. **NFT Holdings**: Quickly check your XDC account NFT's with a simple command.
+
+<p align="center">
+  <img  width="300" src="Assets/Screenshot 2023-10-26 at 01.32.11.png">
+</p>
 
 ## Getting Started
 
