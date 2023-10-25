@@ -30,11 +30,11 @@ To start using Bino, you can follow these steps:
 
 1. **Install Telegram**: If you haven't already, install the Telegram app on your preferred device and create an account.
 
-2. **Find Bino**: Search for the Bino bot in Telegram by its username, which is usually something like `@BinoXDCBot`. Start a chat with the bot.
+2. **Find Bino**: Search for the Bino bot in Telegram by its username, which is usually something like `@@TapTipbot`. Start a chat with the bot.
 
-3. **Authorize**: Follow the bot's instructions to authorize and link your XDC wallet. Bino will guide you through the setup process.
+3. **Authorize**: Follow the bot's instructions to generate your XDC wallet. Bino will guide you through the setup process.
 
-4. **Begin Using Bino**: Once set up, you can start using Bino's features by sending commands to the bot. Refer to the [Usage](#usage) section for a list of available commands.
+4. **Begin Using Bino**: Once set up, you can start using Bino's features by sending commands - selecting options to the bot. Refer to the [Usage](#usage) section for a list of available commands.
 
 ## Usage
 
