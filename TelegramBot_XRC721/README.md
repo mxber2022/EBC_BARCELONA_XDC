@@ -25,7 +25,8 @@ Before setting up the bot, ensure you have the following:
 1. Clone this repository to your local machine:
 
    ```bash
-   git clone 
+   git clone https://github.com/mxber2022/EBC_BARCELONA_XDC
+   cd TelegramBot_XRC721
    ```
 
 2. Install the required dependencies:
@@ -45,7 +46,7 @@ Before setting up the bot, ensure you have the following:
 1. Start the bot:
 
    ```bash
-   node index.js
+   yarn start
    ```
 
 2. Search for your bot on Telegram and start a chat with it.
@@ -54,10 +55,8 @@ Before setting up the bot, ensure you have the following:
 
 ## Commands
 
-- `/start`: Initialize the bot and receive a welcome message.
-- `/mint`: Initiate the NFT minting process. The bot will guide you through the necessary steps, such as uploading the image, setting a title, description, etc.
-- `/help`: Display a list of available commands and their descriptions.
+- `/start`: Initialize the bot and receive a welcome message and options.
 
 ---
 
-Feel free to customize and enhance this bot to meet your specific requirements. If you encounter any issues or have suggestions for improvements, please feel free to contribute to this repository. Happy NFT minting through Telegram! 🚀🎨🔥
+Feel free to customize and enhance this bot to meet your specific requirements. If you encounter any issues or have suggestions for improvements, please feel free to contribute to this repository 🚀🎨🔥
