@@ -8,7 +8,7 @@ const {abi} = require('./abi.js')
 const { ethers } = require('ethers');
 //require('dotenv/config');
 require('dotenv').config({path: '/Users/maharajababu/Documents/Projects/EBC_BARCELONA_XDC/TelegramBot_XRC721/.env'})
-const { TatumSDK, Xdc, Network, XinFin } = require('@tatumio/tatum');
+const { TatumSDK, Xdc, Network, XinFin, XDC } = require('@tatumio/tatum');
 const { EvmWalletProvider } = require("@tatumio/evm-wallet-provider");
 
 const app = express();
@@ -39,12 +39,14 @@ async function main() {
               [{ text: 'Generate Wallet', callback_data: 'walletcreation' }],
               [{ text: 'TIP', callback_data: 'tip' }],
               [{ text: 'AccountBalance', callback_data: 'Balance' }],
-              [{ text: 'NFT Gallery Viewing', callback_data: 'gallery_viewing' }],
+              [{ text: 'NFT Holdings', callback_data: 'gallery_viewing' }],
               [{ text: 'Trading Alert', callback_data: 'trading_alert' }],
               [{ text: 'NFT Minting', callback_data: 'nft_minting' }],
               [{ text: 'Monitor Address', callback_data: 'monitor' }]
               
-          ]
+          ],
+          resize_keyboard: true,  // Adjust the keyboard size to fit the screen
+          one_time_keyboard: true 
       }
     };
 
@@ -344,4 +346,40 @@ async function monitorContractTransactions(chatId) {
         }
     });
 }
+
+/* 
+  5. Get all nft wallet address holds
+*/
+bot.on('callback_query', async (callbackQuery) => {
+  const action = callbackQuery.data;
+  const msg = callbackQuery.message;
+  const chatId = msg.chat.id;
+
+  if (action === 'gallery_viewing') {
+      getNFT(); 
+    
+  } 
+});
+
+async function getNFT() {
+  
+  try {
+    const tatum = await TatumSDK.init({ network: Network.XDC,
+      configureWalletProviders: [
+          EvmWalletProvider,
+      ]
+      });
+    const balance = await tatum.nft.getBalance({
+      addresses: ['0x2Cd36266CC9257fd8F81A7a25B3c527CA53E58B4'], // replace with your address
+    });
+    console.log(balance.data);
+  } catch (error) {
+    console.error("Error fetching NFT balance:", error);
+  }
+ 
+}
+
+/* 
+  6. NFT MINTING
+*/
 
