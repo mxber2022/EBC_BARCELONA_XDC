@@ -189,6 +189,3 @@ myMongoServer.post('/tip', async(req, res) => {
 
 });
 
-async function transfer_tip() {
-
-}

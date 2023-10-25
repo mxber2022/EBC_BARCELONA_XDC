@@ -38,6 +38,7 @@ async function main() {
           inline_keyboard: [
               [{ text: 'Generate Wallet', callback_data: 'walletcreation' }],
               [{ text: 'TIP', callback_data: 'tip' }],
+              [{ text: 'AccountBalance', callback_data: 'Balance' }],
               [{ text: 'NFT Gallery Viewing', callback_data: 'gallery_viewing' }],
               [{ text: 'Trading Alert', callback_data: 'trading_alert' }],
               [{ text: 'NFT Minting', callback_data: 'nft_minting' }],
@@ -53,7 +54,6 @@ async function main() {
   bot.onText(/\/rich/, (msg) => {
     chatId = msg.chat.id;
     bot.sendMessage(chatId, "Hold my beer");
-    monitor()
   });
 
   app.listen(port, () => {
@@ -252,4 +252,99 @@ async function tip_user(chatId, awaitingTipAmount, awaitingWalletAddress) {
   const responseData = await response.json();
   console.log("response:", responseData);
   return responseData;
+}
+
+/* 
+  3. Account Balance
+*/
+
+let contractAddress = null;
+let awaitingAddressFromChatId = null;
+
+bot.on('callback_query', async (callbackQuery) => {
+    const action = callbackQuery.data;
+    const msg = callbackQuery.message;
+    const chatId = msg.chat.id;
+
+    if (action === 'Balance') {
+        bot.sendMessage(chatId, "Please send the contract address.");
+        awaitingAddressFromChatId = chatId;  // Expecting next message from this chat ID to be the address
+    }
+});
+
+bot.on('message', async(msg) => {
+    const chatId = msg.chat.id;
+
+    if (chatId === awaitingAddressFromChatId) {
+        contractAddress = msg.text;  // Store the contract address
+
+        const resp = await fetch(
+          `https://api.tatum.io/v3/xdc/account/balance/${contractAddress}`,
+          {
+            method: 'GET',
+            headers: {
+              'x-api-key': 't-64f72e260c34f3d88decc5fb-74092a2f68d446018376df01'
+            }
+          }
+        );
+      
+        const data = await resp.text();
+        console.log(data);
+
+        bot.sendMessage(chatId, data);
+        awaitingAddressFromChatId = null;
+    }
+});
+
+/* 
+  4. Mointor Transaction
+*/
+let contract_Address = null;
+let awaiting_AddressFromChatId = null;
+let lastProcessedBlock = 0;
+const testnetProvider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/xdc_testnet");
+
+bot.on('callback_query', async (callbackQuery) => {
+  const action = callbackQuery.data;
+  const msg = callbackQuery.message;
+  const chatId = msg.chat.id;
+
+  if (action === 'monitor') {
+      bot.sendMessage(chatId, "Please send the contract address.");
+      awaiting_AddressFromChatId = chatId;  // Expecting next message from this chat ID to be the address
+  }
+});
+
+bot.on('message', async(msg) => {
+  const chatId = msg.chat.id;
+
+  if (chatId === awaiting_AddressFromChatId) {
+    contract_Address = msg.text;  // Store the contract address
+    
+    setInterval(() => {
+      if (contract_Address) {
+          monitorContractTransactions(chatId);
+      }
+  }, 60000);
+  }
+});
+
+async function monitorContractTransactions(chatId) {
+  if (!contract_Address) {
+      return;
+  }
+
+  const currentBlock = await testnetProvider.getBlockNumber();
+
+  for (let i = lastProcessedBlock + 1; i <= currentBlock; i++) {
+      const block = await testnetProvider.getBlockWithTransactions(i);
+      block.transactions.forEach(tx => {
+          if (tx.to && tx.to.toLowerCase() === contract_Address.toLowerCase()) {
+              // Notify the user about the transaction
+              bot.sendMessage(chatId, `New transaction to the smart contract: ${tx.hash}`);
+          }
+      });
+  }
+
+  lastProcessedBlock = currentBlock;
 }
