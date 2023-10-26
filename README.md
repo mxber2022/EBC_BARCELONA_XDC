@@ -12,9 +12,11 @@ Bino is a Telegram bot designed to provide a seamless experience for users on th
 ## Table of Contents
 
 - [Features](#features)
+- [Presentation Media](#presentation-media)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [Lines of Code](#lines-of-code)
 - [License](#license)
 
 ## Features
@@ -36,6 +38,12 @@ Bino offers a variety of features to simplify your interaction with the XDC bloc
 <p align="center">
   <img  width="300" src="Assets/Screenshot 2023-10-26 at 01.32.11.png">
 </p>
+
+## Presentation Media
+
+https://www.canva.com/design/DAFyK0rMdyg/6XTRIT560cVURYF7MTDRDA/edit?utm_content=DAFyK0rMdyg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
+https://youtu.be/OfBR14UJOWk
 
 ## Getting Started
 
@@ -75,6 +83,17 @@ We welcome contributions to Bino to help improve and expand its functionality. I
 3. Make your changes and submit a pull request.
 
 4. Be sure to follow our code of conduct and contribute in a positive and constructive manner.
+
+## Lines of Code
+
+1) Mongo.db : https://github.com/mxber2022/EBC_BARCELONA_XDC/blob/3a2edff516fc27c2e225b4c3b512af8d9bde609b/Database_Mongodb/src/encrypme.js#L5
+
+2) Tatum.io : https://github.com/mxber2022/EBC_BARCELONA_XDC/blob/3a2edff516fc27c2e225b4c3b512af8d9bde609b/Database_Mongodb/src/app.js#L123
+
+3) Telegram Bot Server : https://github.com/mxber2022/EBC_BARCELONA_XDC/blob/3a2edff516fc27c2e225b4c3b512af8d9bde609b/TelegramBot_XRC721/src/index.js#L36
+
+4) XDC Smart Contracts : https://github.com/mxber2022/EBC_BARCELONA_XDC/blob/3a2edff516fc27c2e225b4c3b512af8d9bde609b/SmartContract/contracts/XDC_HACK.sol#L16
+
 
 ## License
 
